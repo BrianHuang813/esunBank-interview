@@ -1,4 +1,23 @@
 services:
+  api:
+    build:
+      context: ./backend
+    container_name: esun-library-api
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE:-library}?useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_0900_ai_ci&serverTimezone=Asia/Taipei
+      MYSQL_USER: ${MYSQL_USER:-library_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me}
+      JWT_SECRET: ${JWT_SECRET:-local-development-secret-change-before-use}
+      JWT_EXPIRATION_MINUTES: ${JWT_EXPIRATION_MINUTES:-60}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
+      TZ: Asia/Taipei
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
   db:
     image: mysql:8.4
     container_name: esun-library-db

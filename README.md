@@ -32,8 +32,9 @@
 ## 開始開發
 
 1. 複製 `.env.example` 為 `.env`，設定本機密碼與 JWT secret。
-2. 以 `docker compose up -d db` 啟動 MySQL。
-3. 依 [implementation-plan.md](docs/implementation-plan.md) 先完成資料庫，再分別施工後端與前端。
+2. 以 `docker compose up --build api` 啟動 MySQL 與 Spring Boot API。
+3. API 啟動後可由 `http://localhost:8080/api/v1/books` 確認書目資料。
+4. 依 [implementation-plan.md](docs/implementation-plan.md) 繼續完成前端。
 
 本機需求：Java 21、Maven 3.9+、Node.js 22+、Docker Desktop。
 
