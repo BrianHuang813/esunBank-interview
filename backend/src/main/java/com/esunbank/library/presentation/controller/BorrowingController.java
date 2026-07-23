@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esunbank.library.business.service.BorrowingService;
 import com.esunbank.library.common.response.ApiResponse;
+import com.esunbank.library.common.validation.PaginationConstraints;
 import com.esunbank.library.presentation.dto.ApiDtoMapper;
 import com.esunbank.library.presentation.dto.BorrowingDtos;
 import com.esunbank.library.presentation.dto.PageResponse;
@@ -66,6 +67,7 @@ public class BorrowingController {
 
             @RequestParam(defaultValue = "0")
             @Min(value = 0, message = "page 不可小於 0")
+            @Max(value = PaginationConstraints.MAX_PAGE, message = "page 不可大於 1000000")
             int page,
 
             @RequestParam(defaultValue = "20")

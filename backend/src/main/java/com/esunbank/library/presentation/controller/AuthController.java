@@ -1,6 +1,7 @@
 package com.esunbank.library.presentation.controller;
 
 import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,9 +36,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ApiResponse<AuthDtos.LoginResponse> login(
-            @Valid @RequestBody AuthDtos.LoginRequest request
+            @Valid @RequestBody AuthDtos.LoginRequest request,
+            HttpServletRequest httpRequest
     ) {
-        var result = authService.login(request.phoneNumber(), request.password());
+        var result = authService.login(
+                request.phoneNumber(),
+                request.password(),
+                httpRequest.getRemoteAddr()
+        );
         return ApiResponse.of(mapper.toLoginResponse(result));
     }
 }

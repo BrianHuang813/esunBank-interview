@@ -30,13 +30,17 @@ Spring Boot REST API。程式依題目要求切成四個主要責任層：
 
 ```bash
 cp .env.example .env
-docker compose up --build api
+docker compose up --build
 ```
 
-這會先初始化 MySQL，再啟動 `http://localhost:8080`。若本機已有 Java 21 與 Maven，也可以先啟動資料庫再執行：
+這會先初始化 MySQL，再由 Web Server 對
+`http://localhost:5173/api/v1` 提供 API。API 與資料庫不直接發布 host
+port。若要直接以 Maven 啟動，需自行提供可連線的 MySQL 及以下環境變數：
 
 ```bash
-export JWT_SECRET='replace-with-at-least-32-random-characters'
+export DB_URL='jdbc:mysql://localhost:3306/library'
+export MYSQL_PASSWORD='<database-password>'
+export JWT_SECRET='<at-least-32-random-bytes>'
 mvn spring-boot:run
 ```
 
@@ -46,4 +50,4 @@ mvn spring-boot:run
 mvn test
 ```
 
-目前單元測試涵蓋密碼雜湊流程、登入成功與失敗、JWT、書籍不存在及 MySQL procedure error translation。資料庫交易與 HTTP 流程需使用 MySQL 8.4 驗證，不能以 H2 取代 Stored Procedures。
+目前單元測試涵蓋密碼雜湊、登入成功與失敗、登入限流與帳號暫時鎖定、JWT、分頁邊界、書籍不存在及 MySQL procedure error translation。資料庫交易與 HTTP 流程需使用 MySQL 8.4 驗證，不能以 H2 取代 Stored Procedures。

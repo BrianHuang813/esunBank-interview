@@ -38,7 +38,7 @@ public class BookRepository {
                             resultSet.getLong("total_items")
                     ),
                     keyword,
-                    page * size,
+                    (long) page * size,
                     size
             );
             long total = rows.isEmpty() ? 0 : rows.getFirst().totalItems();

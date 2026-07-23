@@ -15,11 +15,18 @@ import com.esunbank.library.common.exception.ApiException;
 import com.esunbank.library.common.exception.ErrorCode;
 import com.esunbank.library.data.repository.UserRepository;
 import com.esunbank.library.security.JwtService;
+import com.esunbank.library.security.LoginAttemptService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -30,12 +37,19 @@ class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private JwtService jwtService;
+    @Mock
+    private LoginAttemptService loginAttemptService;
 
     private AuthService authService;
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(userRepository, passwordEncoder, jwtService);
+        authService = new AuthService(
+                userRepository,
+                passwordEncoder,
+                jwtService,
+                loginAttemptService
+        );
     }
 
     @Test
@@ -60,20 +74,33 @@ class AuthServiceTest {
         when(jwtService.createToken(publicUser)).thenReturn("signed-jwt");
         when(jwtService.expirationSeconds()).thenReturn(3600L);
 
-        var result = authService.login("0912345678", "Interview123!");
+        var result = authService.login("0912345678", "Interview123!", "192.0.2.10");
 
         assertThat(result.accessToken()).isEqualTo("signed-jwt");
         assertThat(result.expiresIn()).isEqualTo(3600L);
         assertThat(result.user()).isEqualTo(publicUser);
+        verify(loginAttemptService).checkAllowed("0912345678", "192.0.2.10");
+        verify(loginAttemptService).recordSuccess("0912345678");
     }
 
     @Test
     void loginDoesNotRevealMissingPhoneNumber() {
         when(userRepository.findByPhoneNumber("0999999999")).thenReturn(Optional.empty());
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
-        assertThatThrownBy(() -> authService.login("0999999999", "Interview123!"))
+        assertThatThrownBy(() -> authService.login(
+                "0999999999",
+                "Interview123!",
+                "192.0.2.10"
+        ))
                 .isInstanceOfSatisfying(ApiException.class, exception ->
                         assertThat(exception.errorCode()).isEqualTo(ErrorCode.AUTHENTICATION_FAILED));
+
+        verify(passwordEncoder).matches(
+                eq("Interview123!"),
+                argThat(hash -> hash != null && hash.startsWith("$2"))
+        );
+        verify(loginAttemptService).recordFailure("0999999999", "192.0.2.10");
     }
 
     @Test
@@ -81,9 +108,32 @@ class AuthServiceTest {
         when(userRepository.findByPhoneNumber("0912345678")).thenReturn(Optional.of(storedUser()));
         when(passwordEncoder.matches("wrong-password", "bcrypt-hash")).thenReturn(false);
 
-        assertThatThrownBy(() -> authService.login("0912345678", "wrong-password"))
+        assertThatThrownBy(() -> authService.login(
+                "0912345678",
+                "wrong-password",
+                "192.0.2.10"
+        ))
                 .isInstanceOfSatisfying(ApiException.class, exception ->
                         assertThat(exception.errorCode()).isEqualTo(ErrorCode.AUTHENTICATION_FAILED));
+
+        verify(loginAttemptService).recordFailure("0912345678", "192.0.2.10");
+        verify(loginAttemptService, never()).recordSuccess("0912345678");
+    }
+
+    @Test
+    void blockedLoginDoesNotQueryUserRepository() {
+        doThrow(new ApiException(ErrorCode.TOO_MANY_LOGIN_ATTEMPTS))
+                .when(loginAttemptService)
+                .checkAllowed("0912345678", "192.0.2.10");
+
+        assertThatThrownBy(() -> authService.login(
+                "0912345678",
+                "Interview123!",
+                "192.0.2.10"
+        )).isInstanceOfSatisfying(ApiException.class, exception ->
+                assertThat(exception.errorCode()).isEqualTo(ErrorCode.TOO_MANY_LOGIN_ATTEMPTS));
+
+        verifyNoInteractions(userRepository);
     }
 
     private User storedUser() {

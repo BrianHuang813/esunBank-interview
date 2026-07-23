@@ -63,7 +63,7 @@ public class BorrowingRepository {
                     ),
                     userId,
                     status,
-                    page * size,
+                    (long) page * size,
                     size
             );
             long total = rows.isEmpty() ? 0 : rows.getFirst().totalItems();

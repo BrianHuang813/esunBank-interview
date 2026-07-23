@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "請檢查輸入資料"),
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "手機號碼或密碼錯誤"),
+    TOO_MANY_LOGIN_ATTEMPTS(HttpStatus.TOO_MANY_REQUESTS, "登入嘗試次數過多，請稍後再試"),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "沒有權限執行此操作"),
     BORROWING_FORBIDDEN(HttpStatus.FORBIDDEN, "不能操作其他使用者的借閱紀錄"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "使用者不存在"),
