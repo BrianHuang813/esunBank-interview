@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     phone_number VARCHAR(20) NOT NULL,
     password_hash VARCHAR(100) NOT NULL,
-    user_name VARCHAR(100) NOT NULL,
+    user_name VARCHAR(30) NOT NULL,
     registration_time DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     last_login_time DATETIME(6) NULL,
     PRIMARY KEY (id),
@@ -10,7 +10,10 @@ CREATE TABLE IF NOT EXISTS users (
     CONSTRAINT ck_users_phone_number
         CHECK (phone_number REGEXP '^09[0-9]{8}$'),
     CONSTRAINT ck_users_user_name
-        CHECK (CHAR_LENGTH(TRIM(user_name)) BETWEEN 1 AND 100)
+        CHECK (
+            CHAR_LENGTH(TRIM(user_name)) BETWEEN 1 AND 30
+            AND TRIM(user_name) REGEXP '^[A-Za-z㐀-䶿一-鿿 ]+$'
+        )
 ) ENGINE = InnoDB
   DEFAULT CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci;

@@ -28,6 +28,9 @@ Base URL：`/api/v1`。時間一律為 ISO-8601 且帶時區，例如 `2026-07-2
 
 ### POST /auth/register
 
+密碼長度必須介於 8 到 20 個字元。
+使用者名稱去除前後空白後不可為空，最多 30 個字元，僅接受中文、英文字母與空格。
+
 Request：
 
 ```json
@@ -41,6 +44,8 @@ Request：
 Response：`201 Created`，回傳 `id`、`phoneNumber`、`userName`、`registrationTime`，不回傳 password hash。
 
 ### POST /auth/login
+
+密碼最多 20 個字元。
 
 Request：
 

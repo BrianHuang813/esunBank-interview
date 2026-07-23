@@ -17,7 +17,7 @@ users 1 ────── * borrowing_records * ────── 1 inventory 
 | id | BIGINT | PK，自動編號 |
 | phone_number | VARCHAR(20) | NOT NULL、UNIQUE、正規化後保存 |
 | password_hash | VARCHAR(100) | NOT NULL，只存 BCrypt hash |
-| user_name | VARCHAR(100) | NOT NULL |
+| user_name | VARCHAR(30) | NOT NULL，長度 1 至 30，僅接受中文、英文字母與空格 |
 | registration_time | DATETIME(6) | NOT NULL |
 | last_login_time | DATETIME(6) | 可為 NULL |
 

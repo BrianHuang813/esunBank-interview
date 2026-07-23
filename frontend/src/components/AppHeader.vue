@@ -26,8 +26,7 @@ async function logout() {
   <header class="site-header">
     <div class="site-header__inner">
       <RouterLink class="wordmark" :to="{ name: 'home' }">
-        <span class="wordmark__mark" aria-hidden="true">玉</span>
-        <span>玉山圖書室</span>
+        <span>線上借閱系統</span>
       </RouterLink>
 
       <button

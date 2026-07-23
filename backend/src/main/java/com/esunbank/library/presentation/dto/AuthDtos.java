@@ -17,11 +17,15 @@ public final class AuthDtos {
             String phoneNumber,
 
             @NotBlank(message = "密碼不可空白")
-            @Size(min = 8, max = 72, message = "密碼長度必須介於 8 到 72 個字元")
+            @Size(min = 8, max = 20, message = "密碼長度必須介於 8 到 20 個字元")
             String password,
 
             @NotBlank(message = "使用者名稱不可空白")
-            @Size(max = 100, message = "使用者名稱最多 100 個字元")
+            @Size(max = 30, message = "使用者名稱最多 30 個字元")
+            @Pattern(
+                    regexp = "^[\\p{IsHan}A-Za-z ]+$",
+                    message = "使用者名稱只能包含中文、英文字母與空格"
+            )
             String userName
     ) {
     }
@@ -32,7 +36,7 @@ public final class AuthDtos {
             String phoneNumber,
 
             @NotBlank(message = "密碼不可空白")
-            @Size(max = 72, message = "密碼最多 72 個字元")
+            @Size(max = 20, message = "密碼最多 20 個字元")
             String password
     ) {
     }

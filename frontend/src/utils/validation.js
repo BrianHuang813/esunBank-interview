@@ -9,12 +9,18 @@ export function validatePassword(value) {
   if (!value) {
     return '請輸入密碼'
   }
-  return value.length >= 8 && value.length <= 72 ? '' : '密碼長度需為 8 至 72 個字元'
+  return value.length >= 8 && value.length <= 20 ? '' : '密碼長度需為 8 至 20 個字元'
 }
 
 export function validateUserName(value) {
-  if (!value.trim()) {
+  const trimmedValue = value.trim()
+  if (!trimmedValue) {
     return '請輸入姓名'
   }
-  return value.trim().length <= 100 ? '' : '姓名不可超過 100 個字元'
+  if (trimmedValue.length > 30) {
+    return '姓名不可超過 30 個字元'
+  }
+  return /^[\p{Script=Han}A-Za-z ]+$/u.test(trimmedValue)
+    ? ''
+    : '姓名只能包含中文、英文字母與空格'
 }

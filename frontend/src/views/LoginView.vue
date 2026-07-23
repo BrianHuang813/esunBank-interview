@@ -95,7 +95,7 @@ async function submit() {
             type="password"
             name="password"
             autocomplete="current-password"
-            maxlength="72"
+            maxlength="20"
             placeholder="輸入密碼"
             :aria-invalid="Boolean(errors.password)"
             :aria-describedby="errors.password ? 'login-password-error' : undefined"

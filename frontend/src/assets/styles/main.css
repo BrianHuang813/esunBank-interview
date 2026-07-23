@@ -616,6 +616,16 @@ input[aria-invalid="true"] {
   padding-top: 84px;
 }
 
+.auth-page--register {
+  grid-template-columns: minmax(320px, 440px);
+  justify-content: center;
+}
+
+.auth-page--register .auth-panel {
+  width: 100%;
+  margin-left: 0;
+}
+
 .auth-panel {
   margin-left: 8%;
 }

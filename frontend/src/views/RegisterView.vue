@@ -58,8 +58,8 @@ async function submit() {
   <main class="page auth-page auth-page--register">
     <section class="auth-panel">
       <p class="section-kicker">建立帳號</p>
-      <h1>開始管理你的借閱</h1>
-      <p class="auth-panel__lead">使用台灣手機號碼註冊，密碼至少需要 8 個字元。</p>
+      <h1>開始你的閱讀之旅</h1>
+      <p class="auth-panel__lead">使用手機號碼註冊，密碼長度需為 8 至 20 個字元</p>
 
       <p v-if="submitError" class="feedback feedback--error" role="alert">
         {{ submitError }}
@@ -74,12 +74,13 @@ async function submit() {
             type="text"
             name="userName"
             autocomplete="name"
-            maxlength="100"
+            maxlength="30"
             placeholder="輸入姓名"
             :aria-invalid="Boolean(errors.userName)"
             :aria-describedby="errors.userName ? 'register-name-error' : undefined"
             @blur="errors.userName = validateUserName(form.userName)"
           />
+          <p class="field__hint">僅能使用中文、英文字母與空格。</p>
           <p v-if="errors.userName" id="register-name-error" class="field__error">
             {{ errors.userName }}
           </p>
@@ -113,8 +114,8 @@ async function submit() {
             type="password"
             name="password"
             autocomplete="new-password"
-            maxlength="72"
-            placeholder="8 至 72 個字元"
+            maxlength="20"
+            placeholder="8 至 20 個字元"
             :aria-invalid="Boolean(errors.password)"
             :aria-describedby="errors.password ? 'register-password-error' : undefined"
             @blur="errors.password = validatePassword(form.password)"
@@ -135,10 +136,5 @@ async function submit() {
         <RouterLink class="text-link" :to="{ name: 'login' }">前往登入</RouterLink>
       </p>
     </section>
-
-    <aside class="auth-note auth-note--lower">
-      <h2>只保留必要資料</h2>
-      <p>帳號用來識別借閱人，密碼會經過安全雜湊後才儲存。</p>
-    </aside>
   </main>
 </template>

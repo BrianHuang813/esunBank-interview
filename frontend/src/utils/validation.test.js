@@ -18,11 +18,21 @@ describe('validation', () => {
   it('enforces the password length range', () => {
     expect(validatePassword('short')).toBeTruthy()
     expect(validatePassword('Interview123!')).toBe('')
-    expect(validatePassword('a'.repeat(73))).toBeTruthy()
+    expect(validatePassword('a'.repeat(20))).toBe('')
+    expect(validatePassword('a'.repeat(21))).toBeTruthy()
   })
 
   it('rejects blank names and accepts a normal name', () => {
     expect(validateUserName('   ')).toBeTruthy()
     expect(validateUserName('王小明')).toBe('')
+    expect(validateUserName('John Smith')).toBe('')
+    expect(validateUserName('a'.repeat(30))).toBe('')
+    expect(validateUserName('a'.repeat(31))).toBeTruthy()
+  })
+
+  it('rejects numbers and special characters in names', () => {
+    expect(validateUserName('王小明123')).toBeTruthy()
+    expect(validateUserName('John@Smith')).toBeTruthy()
+    expect(validateUserName("O'Connor")).toBeTruthy()
   })
 })

@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS sp_user_create$$
 CREATE PROCEDURE sp_user_create(
     IN p_phone_number VARCHAR(20),
     IN p_password_hash VARCHAR(100),
-    IN p_user_name VARCHAR(100)
+    IN p_user_name VARCHAR(30)
 )
 BEGIN
     DECLARE EXIT HANDLER FOR 1062
@@ -26,7 +26,9 @@ BEGIN
                 MESSAGE_TEXT = 'INVALID_PASSWORD_HASH';
     END IF;
 
-    IF p_user_name IS NULL OR CHAR_LENGTH(TRIM(p_user_name)) = 0 THEN
+    IF p_user_name IS NULL
+       OR CHAR_LENGTH(TRIM(p_user_name)) NOT BETWEEN 1 AND 30
+       OR TRIM(p_user_name) NOT REGEXP '^[A-Za-z㐀-䶿一-鿿 ]+$' THEN
         SIGNAL SQLSTATE '45000'
             SET MYSQL_ERRNO = 30003,
                 MESSAGE_TEXT = 'INVALID_USER_NAME';
