@@ -22,30 +22,47 @@ const props = defineProps({
 })
 
 const imageFailed = ref(false)
+const imageLoaded = ref(false)
 const imageUrl = computed(
   () => `https://covers.openlibrary.org/b/isbn/${props.isbn}-L.jpg?default=false`,
 )
+
+function handleLoad(event) {
+  if (event.currentTarget.naturalWidth <= 1) {
+    imageFailed.value = true
+    return
+  }
+  imageLoaded.value = true
+}
 
 watch(
   () => props.isbn,
   () => {
     imageFailed.value = false
+    imageLoaded.value = false
   },
 )
 </script>
 
 <template>
-  <div class="book-cover" :class="`book-cover--${size}`">
-    <img
-      v-if="!imageFailed"
-      :src="imageUrl"
-      :alt="`${title}書封`"
-      loading="lazy"
-      @error="imageFailed = true"
-    />
-    <div v-else class="book-cover__fallback" role="img" :aria-label="`${title}文字書封`">
+  <div
+    class="book-cover"
+    :class="`book-cover--${size}`"
+    role="img"
+    :aria-label="`${title}書封`"
+  >
+    <div class="book-cover__fallback" aria-hidden="true">
       <span class="book-cover__title">{{ title }}</span>
       <span v-if="author" class="book-cover__author">{{ author }}</span>
     </div>
+    <img
+      v-if="!imageFailed"
+      :src="imageUrl"
+      alt=""
+      loading="lazy"
+      :class="{ 'book-cover__image--loaded': imageLoaded }"
+      @load="handleLoad"
+      @error="imageFailed = true"
+    />
   </div>
 </template>

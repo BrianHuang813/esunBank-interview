@@ -24,17 +24,18 @@
 │   ├── architecture.md       系統與後端分層設計
 │   ├── api-contract.md       REST API 契約
 │   ├── data-model.md         資料模型、狀態與交易規則
+│   ├── frontend-design.md    前端視覺與互動規範
 │   └── implementation-plan.md 前後端施工順序與驗收標準
-├── compose.yaml              本機 MySQL 服務
+├── compose.yaml              Web、API 與 MySQL 服務
 └── .env.example              環境變數範本
 ```
 
 ## 開始開發
 
 1. 複製 `.env.example` 為 `.env`，設定本機密碼與 JWT secret。
-2. 以 `docker compose up --build api` 啟動 MySQL 與 Spring Boot API。
-3. API 啟動後可由 `http://localhost:8080/api/v1/books` 確認書目資料。
-4. 依 [implementation-plan.md](docs/implementation-plan.md) 繼續完成前端。
+2. 執行 `docker compose up --build` 啟動 Web、Spring Boot API 與 MySQL。
+3. 開啟 `http://localhost:5173` 使用系統。
+4. API 可由 `http://localhost:8080/api/v1/books` 確認書目資料。
 
 本機需求：Java 21、Maven 3.9+、Node.js 22+、Docker Desktop。
 
@@ -43,4 +44,5 @@
 - [架構設計](docs/architecture.md)
 - [API 契約](docs/api-contract.md)
 - [資料模型](docs/data-model.md)
+- [前端設計規範](docs/frontend-design.md)
 - [實作計畫](docs/implementation-plan.md)
